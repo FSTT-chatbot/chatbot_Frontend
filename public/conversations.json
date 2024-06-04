@@ -1,0 +1,22 @@
+[
+    {
+        "id":1,
+        "name":"conversation 1"
+    },
+    {
+        "id":2,
+        "name":"conversation 2"
+    },
+    {
+        "id":3,
+        "name":"conversation 3"
+    },
+    {
+        "id":4,
+        "name":"conversation 4"
+    },
+    {
+        "id":5,
+        "name":"conversation 5"
+    }
+]
