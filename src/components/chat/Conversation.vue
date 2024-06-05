@@ -21,7 +21,7 @@
                             </div>
 
                             <!-- response action buttons -->
-                            <div class="mr-auto w-28" >
+                            <div class="mr-auto w-36" >
                                 <div class="ml-2 hover:border hover:border-[#303030] pl-3 flex flex-row gap-x-4 rounded-lg my-2 ">
                                     <button class="outline-none focus:outline-none hover:scale-110 transition-transform">
                                     <i class="fa-regular fa-copy text-lg"></i>
@@ -32,6 +32,10 @@
                                 <button class="outline-none focus:outline-none hover:scale-110 transition-transform">
                                     <i class="fa-solid fa-thumbs-up"></i>
                                 </button>
+                                <button class="outline-none focus:outline-none hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-thumbs-down"></i>
+                                </button>
+                                
                                 </div>
                                
                             </div>
