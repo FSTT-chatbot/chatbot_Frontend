@@ -27,10 +27,10 @@
                                     <i class="fa-regular fa-copy text-lg"></i>
                                 </button>
                                 <button class="outline-none focus:outline-none hover:scale-110 transition-transform">
-                                    <i class="fa-regular fa-copy text-lg"></i>
+                                    <i class="fa-solid fa-repeat"></i>
                                 </button>
                                 <button class="outline-none focus:outline-none hover:scale-110 transition-transform">
-                                    <i class="fa-regular fa-copy text-lg"></i>
+                                    <i class="fa-solid fa-thumbs-up"></i>
                                 </button>
                                 </div>
                                
