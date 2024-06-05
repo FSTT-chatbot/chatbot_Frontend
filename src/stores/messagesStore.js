@@ -4,18 +4,20 @@ import axios from 'axios'
 export const useMessagesStore = defineStore('messages', {
   state: () => ({
     messages: [],
-    currentConversation:null, //{id:1, name:new currentConversation}
-    conversations:[],  //[{id:1, name:new currentConversation} .....]
+    currentConversation:{id:'new', name:'new conversation'}, //{id:1, name:new currentConversation}
+    conversations:[{id:'new', name:'new conversation'}],  //[{id:1, name:new currentConversation} .....]
   }),
+
   getters: {
     getMessages: (state) => state.messages,
     getCurrentConversation: (state) => state.currentConversation,
     getConversations: (state) => state.conversations,
   },
+
   actions: {
+    
     setCurrentConversation (currentConversation){
         this.currentConversation = currentConversation
-        console.log('this.currentConversation',this.currentConversation);
     },
 
     setMessages (data){
@@ -31,116 +33,82 @@ export const useMessagesStore = defineStore('messages', {
     },
     
     addConversation (message){
-        this.conversations.push(message)
+        this.conversations.unshift(message)
     },
 
 
-    async sendMessage(conversatio_id, message){
+    async sendMessage(message){
         try {
-            
-            //** send a message to chatbot ***/
-            // let chatbotResponse = await axios.post('/chatbot/messaging,{
-            //     promp:message
-            // })
-            
-            //** store the prompt message ***/
-            // let result1 = await axios.post('/messages/conversatio_id,{
-            //     message:message
-            // })
-            // this.addMessage(message)
+            if(this.currentConversation?.id !== 'new'){
+                let result = await axios.post('/sendMessage/'+this.currentConversation.id,{
+                    message:message
+                })
+                console.log('response',result );
 
-            //** store the chatBot response message ***/
-            // let result1 = await axios.post('/messages/conversatio_id,{
-            //     message:chatbotResponse.data.message
-            // })
-            // this.addMessage(chatbotResponse.data.message)
+                this.addMessage(result.data.user_message)
+                this.addMessage(result.data.prompt_response)
+            }else{
 
-            
-            this.addMessage(message)
-            this.addMessage('chatbot response chatbot response  chatbot response  chatbot response  chatbot response  chatbot response  chatbot response  chatbot response  chatbot response  chatbot response ')
-            
+                let result = await axios.post('/createConversation',{
+                    message:message
+                })
+                console.log('response',result );
+                let conversationInArry = this.conversations.find(cnv => cnv.id === 'new')
+
+                if(conversationInArry){
+                    conversationInArry.name = result.data.conversation.name
+                    conversationInArry.id = result.data.conversation.id
+                }
+
+                console.log('conversations',this.conversations );
+
+                this.setCurrentConversation (result.data.conversation)
+                this.addMessage(result.data.user_message)
+                this.addMessage(result.data.prompt_response)
+                
+                // this.addMessage({content:'chatbot' ,content: result.data.prompt_response})
+            }
         } catch (error) {
-            console.log('messages error',error)
+            console.log('error',error);
         }
+          
+            
+        
     },
     
-    async fetchConversationMessages(conversatio_id){
-        try {
-            if(conversatio_id){
-                console.log('fetching');
-
-                //** fetch currentConversation messages ***/
-                // let result = await axios.get('/messages/'+conversatio_id+'.json') 
-                fetch('messages/'+conversatio_id+'.json')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('result',data);
-                    this.setMessages(data)
-                })
-                .catch(error=>{
-                    this.setMessages([])
-                })
-                
+    async fetchConversationMessages(){
+        if(this.currentConversation?.id !== 'new'){
+            //** fetch currentConversation messages ***/
+            try {
+                let result = await axios.get('/messages/'+this.currentConversation?.id) 
+                this.setMessages(result.data.messages)
+                console.log("fetchconversatiomessage: ", result)
+            } catch (error) {
+                console.log('fetchConversationMessages error',error);
             }
-            
-
-        } catch (error) {
-            console.log('messages error',error)
         }
     },
 
     async fetchConversations(){
         try {
             //* fecht user conversations here *//
-            //let result = axios.get(/conversations)
-            //this.setConversations(result.data.conversations)
-
-            fetch('conversations.json')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('result',data);
-                    this.setConversations(data)
-                })
-                .catch(error=>{
-                    console.log('conversations error', error);
-                    this.setConversations([])
-                })
-            // this.setConversations([
-            //     {id:1, name:'conversation 1'},
-            //     {id:2, name:'conversation 2'},
-            //     {id:3, name:'conversation 3'},
-            //     {id:4, name:'conversation 4'},
-            //     {id:5, name:'conversation 5'},
-            //     {id:6, name:'conversation 6'},
-            //     {id:7, name:'conversation 7'},
-            //     {id:8, name:'conversation 8'},
-            // ])
-            await this.newConversation()
-
+            let result = await axios.get('/conversations')
+            this.setConversations(result.data.conversations)
+            this.addConversation({id:'new', name:'new conversation'})
         } catch (error) {
-            console.log('messages error',error)
+            console.log('fetchConversations error',error)
         }
     },
 
     async newConversation(){
-        try {
-            // create new currentConversation in the back end and return it
-            // let result = axios.post(/conversations/createNew)
-            // this.addConversation(result.data.conversation)
-            // this.setCurrentConversation(result.data.conversation)
+        let conversationInArry = this.conversations.find(cnv => cnv.id === 'new')
+        if(this.currentConversation.id != 'new' && !conversationInArry){
             this.setMessages([])
-            // this.setconversationId()
-            let id = Math.floor(Math.random() * 10000000) + 500;
-            let conversation = {id:id, name:'new conversation '+id}
+            let conversation = {id:'new', name:'new conversation'}
             this.addConversation(conversation)
             this.setCurrentConversation(conversation)
-
-        } catch (error) {
-            console.log('messages error',error)
         }
     }
-
-
   
   },
 })

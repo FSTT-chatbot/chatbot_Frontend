@@ -48,8 +48,8 @@
             <!-- chat input -->
             <div class=" shrink-0  w-full max-w-3xl  mx-auto px-4">
                 <div class="bg-gray-100 dark:bg-[#212121] rounded-full overflow-hidden min-h-14 h-fit flex items-center py-2 px-2 gap-x-2">
-                    <textarea @input="adjustHeight" ref="promptTextarea" placeholder="Message ChatbotX" rows="1" class="border-none focus:ring-0 grow  bg-transparent focus:outline-none resize-none " ></textarea>
-                    <button class="focus:!outline-none flex rounded-full items-center justify-center bg-green-400 p-1.5 text-surface-200 hover:scale-110 transition-transform">
+                    <textarea @input="adjustHeight" ref="promptTextarea" v-model="messageContent" placeholder="Message ChatbotX" rows="1" class="border-none focus:ring-0 grow  bg-transparent focus:outline-none resize-none " ></textarea>
+                    <button @click="sendMessage" class="focus:!outline-none flex rounded-full items-center justify-center bg-green-400 p-1.5 text-surface-200 hover:scale-110 transition-transform">
                         <svg class="size-6 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                         </svg>
@@ -67,11 +67,9 @@ const messagesStore = useMessagesStore()
 const conversation = computed(()=>messagesStore.getCurrentConversation)
 const messages = computed(()=>messagesStore.getMessages)
 
+const messageContent = ref(null)
 watch(conversation, async ()=>{
-    // console.log('conversation changed',conversation.value);
-    if(!conversation.value?.name.includes('new conversation')){
-        await messagesStore.fetchConversationMessages(conversation.value.id)
-    }
+    await messagesStore.fetchConversationMessages()
 })
 
 const promptTextarea = ref(null)
@@ -83,6 +81,11 @@ function adjustHeight() {
     promptTextarea.value.style.height = newHeight + 'px';
     console.log(promptTextarea.value.style.height);
 
+}
+
+async function sendMessage(){
+    await messagesStore.sendMessage(messageContent.value)
+    messageContent.value = null
 }
 
 

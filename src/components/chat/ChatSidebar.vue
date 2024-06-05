@@ -50,15 +50,18 @@
                 </div>
 
                 <div class="w-full grow overflow-y-auto p-2">
+
                     <!-- history conversation item -->
                     <div @click.stop="pickConversation(conversation)" v-for="conversation in conversations" :key="conversation.id"  :data-id="conversation.id"
                         class="my-2 conversation-history-item group rounded-md   px-1 py-2 cursor-pointer transition-colors relative
-                            hover:bg-gray-300 dark:hover:bg-neutral-700">
-                        <!-- history conversation name -->
+                            hover:bg-gray-300 dark:hover:bg-neutral-700"
+                            :class="{'bg-gray-300 dark:bg-neutral-700': conversation.id === currentConversation.id}">
+                        <!-- history conversation name  {{conversation.name}}-->
                         <div class=" truncate w-full overflow-hidden">{{conversation.name}}</div>
                         
                         <!-- history conversation options -->
-                        <div @click.stop="setOpenChatMenu(conversation.id)" class="conversation-history-item-menu-button absolute group/menu rounded-md top-1 right-1 p-1 flex opacity-0 group-hover:opacity-100 items-center transition-opacity ">
+                        <div @click.stop="setOpenChatMenu(conversation.id)" class="group-hover:bg-gray-400 dark:group-hover:bg-neutral-800
+                        conversation-history-item-menu-button absolute group/menu rounded-md top-1 right-1 p-1 flex opacity-0 group-hover:opacity-100 items-center transition-opacity ">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                             </svg>
@@ -149,7 +152,7 @@ import {ref,onMounted,onBeforeUnmount, computed} from 'vue'
 import {useMessagesStore} from '@/stores/messagesStore.js'
 const messagesStore = useMessagesStore()
 const conversations = computed(()=>messagesStore.getConversations)
-
+const currentConversation = computed(()=>messagesStore.getCurrentConversation)
 
 
 const openChatMenu = ref(null)
@@ -171,7 +174,6 @@ function toggleSidebar(){
     Sidebar.value = !Sidebar.value
 }
 const pickConversation = async (id)=>{
-    // console.log('pickConversation',id);
     await messagesStore.setCurrentConversation(id)
 }
 

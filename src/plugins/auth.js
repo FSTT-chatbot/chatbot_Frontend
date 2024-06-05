@@ -25,7 +25,7 @@ const authPlugin = {
                 console.log('data fetch user',response);
                 return resolve()
               } catch (error) {
-                console.log(error);
+                console.log('error',error);
                 localStorage.setItem("authToken", '');
                 authStore.setToken(localStorage.getItem("authToken"));
                 return reject(error)
